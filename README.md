@@ -8,4 +8,4 @@ This repository was created upon the completion of the research on the 'DEVELOPM
 At the end of this project, the gateway developed was used as a methodological tool for educational purposes for the subject of Industrial Networks, given by Professor Renato Ferreira Fernandes. 
 
 Below you can see one schematic of this research project:
-![esquema-v2]([https://github.com/thiagofcm/Gateway_MODBUS_TCP-RTU/assets/22446244/4cec4e4e-a7e3-4f36-bb70-e763f36ddb2f](https://github.com/thiagofcm/Gateway_MODBUS_TCP-RTU/blob/main/Images/SCHEMATIC.png)https://github.com/thiagofcm/Gateway_MODBUS_TCP-RTU/blob/main/Images/SCHEMATIC.png)
+![esquema](https://github.com/thiagofcm/Gateway_MODBUS_TCP-RTU/blob/main/Images/SCHEMATIC.png)
