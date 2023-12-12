@@ -1,0 +1,184 @@
+;****************************************************************************
+;                           NETMON.INF
+;
+; Microsoft Network Monitor 2.0 Driver Install
+; Provides network counters to Sysmon and frames to the Network Monitor Agent
+;
+; Copyright 1993-1998, Microsoft Corporation
+;
+; Steve Hiskey    05/08/97    Convert win95 inf to be NT5 inf.  
+;                             Copy from NETTCPIP.INF
+;****************************************************************************
+
+[version]
+    signature="$Windows NT$"
+    Class=NetTrans
+    ClassGUID   = {4d36e975-e325-11ce-bfc1-08002be10318}
+    provider=%Msft%
+    LayoutFile=layout.inf
+
+[Manufacturer]
+    %Msft% = Msft
+
+[MSFT]
+    %NETMON.DisplayName% = NETMON.PrimaryInstall, MS_NetMon
+
+;****************************************************************************
+; Network Monitor
+;****************************************************************************
+
+[NETMON.PrimaryInstall]
+    Characteristics = 0x0
+    AddReg          = Registry.NETMON.PrimaryInstall
+
+[Registry.NETMON.PrimaryInstall]
+    HKR,Ndi,HelpText,,%NETMON.HelpText%
+    HKR,Ndi,Service,,"NM"
+
+; Interfaces
+    HKR,Ndi\Interfaces,UpperRange,,"noupper"
+    HKR,Ndi\Interfaces,LowerRange,,"ndis5,ndiswanbh"
+
+; Registry Entries
+    HKLM,SOFTWARE\Classes\CLSID\{425882B0-B0BF-11CE-B59F-00AA006CB37D},,REG_MULTI_SZ,"NDIS NPP"
+    HKLM,SOFTWARE\Classes\CLSID\{425882B0-B0BF-11CE-B59F-00AA006CB37D},"InProcServer32",REG_MULTI_SZ,"%11%\ndisnpp.dll"
+
+    HKLM,SOFTWARE\Classes\CLSID\{D413C502-3FAA-11D0-B254-444553540000},,REG_MULTI_SZ,"NPPAgent"
+    HKLM,SOFTWARE\Classes\CLSID\{D413C502-3FAA-11D0-B254-444553540000},"AppID",REG_MULTI_SZ,"{D413C502-3FAA-11D0-B254-444553540000}"
+    HKLM,SOFTWARE\Classes\CLSID\{D413C502-3FAA-11D0-B254-444553540000},"LocalServer32",REG_MULTI_SZ,"%11%\NPP\NPPAgent.exe"
+    HKLM,SOFTWARE\Classes\CLSID\{D413C502-3FAA-11D0-B254-444553540000},"ThreadingModel",REG_MULTI_SZ,"Both"
+
+    HKLM,SOFTWARE\Classes\CLSID\{944AD531-B09D-11CE-B59C-00AA006CB37D},,REG_MULTI_SZ,"PSFactoryBuffer"
+    HKLM,SOFTWARE\Classes\CLSID\{944AD531-B09D-11CE-B59C-00AA006CB37D},"InProcServer32",REG_MULTI_SZ,"%10%\PsNPPAgn.dll"
+    HKLM,SOFTWARE\Classes\CLSID\{944AD531-B09D-11CE-B59C-00AA006CB37D},"ThreadingModel",REG_MULTI_SZ,"Both"
+
+	HKLM,SYSTEM\CurrentControlSet\Services\nm\Performance
+	HKLM,SYSTEM\CurrentControlSet\Services\nm\Performance,"Close",,"NmClosePerformanceData"
+	HKLM,SYSTEM\CurrentControlSet\Services\nm\Performance,"Collect",,"NmCollectPerformanceData"
+	HKLM,SYSTEM\CurrentControlSet\Services\nm\Performance,"Library",,"nmperf.dll"
+	HKLM,SYSTEM\CurrentControlSet\Services\nm\Performance,"Open",,"NmOpenPerformanceData"
+
+;****************************************************************************
+; Netmon Interface and Protocol Install
+;****************************************************************************
+
+[DestinationDirs]
+    NETMON.Files.sys = 11
+    NETMON.Files.drv = 12
+    NETMON.Files.NPP = 11,NPP            ;System32\NPP
+
+[NETMON.PrimaryInstall.Services]
+    AddService      = NM,0,PrimaryInstall.AddService.NM
+
+; Install NM service
+
+[PrimaryInstall.AddService.NM]
+    DisplayName     = %NM.ServiceDescription%
+    ServiceType     = 1  ;SERVICE_KERNEL_DRIVER
+    StartType       = 3  ;SERVICE_DEMAND_START
+    ErrorControl    = 1  ;SERVICE_ERROR_NORMAL
+    ServiceBinary   = %12%\NMnt.sys
+
+;****************************************************************************
+; Netmon Interface and Service Remove
+;****************************************************************************
+
+[NETMON.PrimaryInstall.Remove]
+    DelReg          = Registry.NETMON.Delete
+
+[NETMON.PrimaryInstall.Remove.Services]
+    DelService  = NM
+
+[Registry.NETMON.Delete]
+    HKCR,AppID\{D413C502-3FAA-11D0-B254-444553540000},LaunchPermission
+    HKCR,AppID\{D413C502-3FAA-11D0-B254-444553540000},RunAs
+    HKLM,SOFTWARE\Classes\CLSID\{425882B0-B0BF-11CE-B59F-00AA006CB37D},InProcServer32
+    HKLM,SOFTWARE\Classes\CLSID\{425882B0-B0BF-11CE-B59F-00AA006CB37D},
+    HKLM,SOFTWARE\Classes\CLSID\{D413C502-3FAA-11D0-B254-444553540000},AppID
+    HKLM,SOFTWARE\Classes\CLSID\{D413C502-3FAA-11D0-B254-444553540000},LocalServer32
+    HKLM,SOFTWARE\Classes\CLSID\{D413C502-3FAA-11D0-B254-444553540000},ThreadingModel
+    HKLM,SOFTWARE\Classes\CLSID\{D413C502-3FAA-11D0-B254-444553540000},
+    HKLM,SOFTWARE\Classes\CLSID\{944AD531-B09D-11CE-B59C-00AA006CB37D},InProcServer32
+    HKLM,SOFTWARE\Classes\CLSID\{944AD531-B09D-11CE-B59C-00AA006CB37D},ThreadingModel
+    HKLM,SOFTWARE\Classes\CLSID\{944AD531-B09D-11CE-B59C-00AA006CB37D},
+	HKLM,SYSTEM\CurrentControlSet\Services\nm\Performance,"Close","NmClosePerformanceData"
+	HKLM,SYSTEM\CurrentControlSet\Services\nm\Performance,"Collect","NmCollectPerformanceData"
+	HKLM,SYSTEM\CurrentControlSet\Services\nm\Performance,"Library","nmperf.dll"
+	HKLM,SYSTEM\CurrentControlSet\Services\nm\Performance,"Open","NmOpenPerformanceData"
+	HKLM,SYSTEM\CurrentControlSet\Services\nm\Performance
+
+; Netmon files to be installed or removed
+
+[NETMON.Files.sys]
+    PsNPPAgn.dll,,,2
+    NPPTools.dll,,,2
+	nmperf.dll,,,2
+	nmctrs.h,,,2
+	nmctrs.ini,,,2
+
+[NETMON.Files.drv]
+    nmnt.sys,,,2
+
+[NETMON.Files.NPP]
+    ndisnpp.dll,,,2
+    NPPAgent.exe,,,2
+
+;****************************************************************************
+[NETMON.ExternalApp]
+Run                     = NETMON.ExternalApp.Run
+
+[NETMON.ExternalApp.Run]
+CommandLine             = lodctr nmctrs.ini
+WindowStyle             = 2
+Directory               = %11%  ; %windir%\system32
+
+[NETMON.Remove.ExternalApp]
+Run                     = NETMON.Remove.ExternalApp.Run
+
+[NETMON.Remove.ExternalApp.Run]
+CommandLine             = unlodctr nm
+WindowStyle             = 2
+Directory               = %11%  ; %windir%\system32
+
+;****************************************************************************
+
+[Strings]
+
+;global strings
+Msft  = "Microsoft"
+
+;Netmon strings
+NM.ServiceDescription   = "Network Monitor Agent v2 Driver"
+NETMON.DisplayName = "Network Monitor Agent v2 Driver"
+NETMON.HelpText    = "Netmon Packet capture driver that allows the Netmon UI to acquire packets from the local network."
+
+;****************************************************************************
+; ServiceType values
+;****************************************************************************
+
+SERVICE_KERNEL_DRIVER       = 0x00000001
+SERVICE_FILE_SYSTEM_DRIVER  = 0x00000002
+SERVICE_ADAPTER             = 0x00000004
+SERVICE_RECOGNIZER_DRIVER   = 0x00000008
+SERVICE_WIN32_OWN_PROCESS   = 0x00000010
+SERVICE_WIN32_SHARE_PROCESS = 0x00000020
+SERVICE_INTERACTIVE_PROCESS = 0x00000100
+SERVICE_INTERACTIVE_SHARE_PROCESS = 0x00000120
+
+; StartType values
+SERVICE_BOOT_START          = 0x00000000
+SERVICE_SYSTEM_START        = 0x00000001
+SERVICE_AUTO_START          = 0x00000002
+SERVICE_DEMAND_START        = 0x00000003
+SERVICE_DISABLED            = 0x00000004
+
+; ErrorControl values
+SERVICE_ERROR_IGNORE        = 0x00000000
+SERVICE_ERROR_NORMAL        = 0x00000001
+SERVICE_ERROR_SEVERE        = 0x00000002
+SERVICE_ERROR_CRITICAL      = 0x00000003
+
+; Registry types
+REG_MULTI_SZ                = 0x10000
+REG_EXPAND_SZ               = 0x20000
+REG_DWORD                   = 0x10001

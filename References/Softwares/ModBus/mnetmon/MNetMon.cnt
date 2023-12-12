@@ -1,0 +1,17 @@
+:Base MNetMon.hlp
+1 MNetMon Description
+2 Overview=HID_OVERVIEW
+2 Serial Connections=HID_CONNECTIONS
+2 Network Connection=HID_NETWORK
+2 MBAP Protocol=HID_MBAP
+1 Commands
+2 Connect/Disconnect=HID_CONNECT
+2 Stale Data Timer=HID_DATATIMER
+2 Message Statistics=HID_STATS
+2 Freeze Display=HID_FREEZE
+2 Browse Data Points=HID_BROWSE
+1 How To:
+2 determine which RS-232 pin is Receive=HID_RCVPIN
+2 determine which port is connected to the modbus Master=HID_MASTER
+2 access Modbus data from other devices=HID_ACCESS
+2 access Modbus data from the same machine=HID_LOOPBACK
